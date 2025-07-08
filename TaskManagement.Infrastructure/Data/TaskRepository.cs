@@ -4,9 +4,17 @@ using TaskManagement.Domain.Interfaces;
 
 namespace TaskManagement.Infrastructure.Data;
 
-public class TaskRepository(AppDbContext context) : ITaskRepository
+/// <summary>
+/// Concrete implementation of ITaskRepository using EF Core.
+/// </summary>
+public class TaskRepository : ITaskRepository
 {
-    private readonly AppDbContext _context = context;
+    private readonly AppDbContext _context;
+
+    public TaskRepository(AppDbContext context)
+    {
+        _context = context;
+    }
 
     public async Task<IEnumerable<TaskItem>> GetAllAsync()
     {

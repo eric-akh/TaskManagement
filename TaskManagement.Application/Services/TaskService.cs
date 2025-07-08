@@ -4,6 +4,9 @@ using TaskManagement.Domain.Interfaces;
 
 namespace TaskManagement.Application.Services;
 
+/// <summary>
+/// Implementation of the task management business logic.
+/// </summary>
 public class TaskService : ITaskService
 {
     private readonly ITaskRepository _repository;

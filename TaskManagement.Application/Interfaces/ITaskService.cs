@@ -2,6 +2,9 @@
 
 namespace TaskManagement.Application.Interfaces;
 
+/// <summary>
+/// Application service for managing tasks and implementing business logic.
+/// </summary>
 public interface ITaskService
 {
     Task<IEnumerable<TaskItem>> GetAllTasksAsync();
