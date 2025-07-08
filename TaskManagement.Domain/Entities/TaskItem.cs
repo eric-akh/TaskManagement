@@ -29,4 +29,9 @@ public class TaskItem
     /// Indicates whether the task is completed.
     /// </summary>
     public bool IsCompleted { get; set; } = false;
+
+    /// <summary>
+    /// Optional deadline for completing the task.
+    /// </summary>
+    public DateTime? DueDate { get; set; }
 }
