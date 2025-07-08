@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TaskManagement.Application.Interfaces;
 using TaskManagement.Domain.Entities;
 
@@ -24,8 +25,15 @@ public class TasksController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var tasks = await _taskService.GetAllTasksAsync();
-        return Ok(tasks);
+        try
+        {
+            var tasks = await _taskService.GetAllTasksAsync();
+            return Ok(tasks);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Unexpected error", detail = ex.Message });
+        }
     }
 
     /// <summary>
@@ -34,9 +42,18 @@ public class TasksController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var task = await _taskService.GetTaskByIdAsync(id);
-        if (task == null) return NotFound();
-        return Ok(task);
+        try
+        {
+            var task = await _taskService.GetTaskByIdAsync(id);
+            if (task == null)
+                return NotFound(new { message = $"Task with ID {id} not found." });
+
+            return Ok(task);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Unexpected error", detail = ex.Message });
+        }
     }
 
     /// <summary>
@@ -45,8 +62,19 @@ public class TasksController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(TaskItem task)
     {
-        await _taskService.CreateTaskAsync(task);
-        return CreatedAtAction(nameof(GetById), new { id = task.Id }, task);
+        try
+        {
+            await _taskService.CreateTaskAsync(task);
+            return CreatedAtAction(nameof(GetById), new { id = task.Id }, task);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("PRIMARY KEY") == true)
+        {
+            return Conflict(new { message = "Task with the same ID already exists." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Unexpected error", detail = ex.Message });
+        }
     }
 
     /// <summary>
@@ -55,9 +83,22 @@ public class TasksController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, TaskItem task)
     {
-        if (id != task.Id) return BadRequest("ID mismatch");
-        await _taskService.UpdateTaskAsync(task);
-        return NoContent();
+        if (id != task.Id)
+            return BadRequest(new { message = "ID in URL does not match ID in payload." });
+
+        try
+        {
+            await _taskService.UpdateTaskAsync(task);
+            return NoContent();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return NotFound(new { message = $"Task with ID {id} not found or already deleted." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Unexpected error", detail = ex.Message });
+        }
     }
 
     /// <summary>
@@ -66,7 +107,14 @@ public class TasksController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        await _taskService.DeleteTaskAsync(id);
-        return NoContent();
+        try
+        {
+            await _taskService.DeleteTaskAsync(id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Unexpected error", detail = ex.Message });
+        }
     }
 }

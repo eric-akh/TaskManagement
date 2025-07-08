@@ -27,6 +27,25 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+
+        var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
+
+        var response = new
+        {
+            message = "An unexpected error occurred.",
+            detail = error?.Message
+        };
+
+        await context.Response.WriteAsJsonAsync(response);
+    });
+});
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
