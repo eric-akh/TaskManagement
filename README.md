@@ -16,10 +16,6 @@ TaskManagement.sln
 ├── TaskManagement.Api # ASP.NET Core Web API
 └── TaskManagement.Tests # xUnit test project with Moq
 
-yaml
-Copy
-Edit
-
 ---
 
 ## ⚙️ Technologies Used
