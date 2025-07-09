@@ -9,11 +9,17 @@ A clean, modular, and testable Task Management REST API built with **ASP.NET Cor
 This project follows **Clean Architecture**, separating concerns across multiple layers:
 
 TaskManagement.sln
+
 │
+
 ├── TaskManagement.Domain # Core entities and repository interfaces
+
 ├── TaskManagement.Application # Business logic and use case services
+
 ├── TaskManagement.Infrastructure # EF Core DbContext and repository implementations
+
 ├── TaskManagement.Api # ASP.NET Core Web API
+
 └── TaskManagement.Tests # xUnit test project with Moq
 
 ---
@@ -42,7 +48,6 @@ TaskManagement.sln
 1. Clone the repo:
 
 git clone https://github.com/YOUR_USERNAME/TaskManagement.git
-cd TaskManagement
 
 2. Apply migrations and create the database:
 
