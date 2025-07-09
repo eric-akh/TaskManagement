@@ -1,6 +1,7 @@
 # 📝 TaskManagement
 
-A clean, modular, and testable Task Management REST API built with **ASP.NET Core**, **Entity Framework Core**, and **Clean Architecture principles**.
+A clean, modular, and testable Task Management REST API built with **ASP.NET Core**, **Entity Framework Core**, and **Clean Architecture principles**.  
+Fully containerized using **Docker & Docker Compose**, with automatic EF Core migrations and Swagger UI.
 
 ---
 
@@ -20,7 +21,9 @@ TaskManagement.sln
 
 ├── TaskManagement.Api # ASP.NET Core Web API
 
-└── TaskManagement.Tests # xUnit test project with Moq
+├── TaskManagement.Tests # xUnit test project with Moq
+
+└── docker-compose.yml / Dockerfile
 
 ---
 
@@ -32,6 +35,7 @@ TaskManagement.sln
 - ✅ xUnit + Moq for unit testing
 - ✅ Swagger for API documentation
 - ✅ GitHub Actions (CI/CD for running tests on push/PR)
+- ✅ Docker + Docker Compose
 
 ---
 
@@ -40,7 +44,7 @@ TaskManagement.sln
 ### 🔧 Prerequisites
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
-- SQL Server (LocalDB or Express)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - Git
 
 ### 🛠 Setup Instructions
@@ -49,17 +53,29 @@ TaskManagement.sln
 
 git clone https://github.com/YOUR_USERNAME/TaskManagement.git
 
-2. Apply migrations and create the database:
+2. Build and run using Docker Compose:
+
+docker compose up --build
+
+3. Apply migrations and create the database:
 
 dotnet ef database update --project TaskManagement.Infrastructure --startup-project TaskManagement.Api
 
-3. Run the API:
+4. Run the API (locally):
 
 dotnet run --project TaskManagement.Api
 
-4. Visit Swagger:
+5. Visit Swagger (on local):
 
 https://localhost:7037/swagger
+
+6. Visit Swagger UI (on container):
+
+http://localhost:5000/swagger
+
+
+Note: EF Core migrations will be applied automatically at startup.
+
 
 ✅ Features
 
@@ -73,7 +89,7 @@ https://localhost:7037/swagger
 
 - Unit tests with xUnit and mocking with Moq
 
-- GitHub Actions for CI
+- GitHub Actions for CI/CD
 
 🧪 Running Tests
 
@@ -89,6 +105,9 @@ Visit /swagger for live documentation and testing.
   "description": "Write a detailed project overview",
   "dueDate": "2025-07-10T12:00:00Z"
 }
+
+🧱 GitHub Actions (CI)
+Every push and pull request to the main branch triggers automated unit tests via GitHub Actions.
 
 📃 License
 MIT License - free to use, modify, or contribute!
